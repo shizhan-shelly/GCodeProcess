@@ -38,7 +38,12 @@ class GCodeProcess {
 
   void BreakArcPocess(const std::vector<GCodeStruct> &g_code,
                       std::vector<GCodeStruct> &process_code,
-                      double break_arc_time, double cut_speed);
+                      double break_arc_time, double global_speed, bool F_forbid);
+
+  void ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
+                        std::vector<GCodeStruct> &process_code,
+                        double forbid_thc_distance, double forbid_thc_speed_percent,
+                        double global_speed, bool F_forbid);
 
  private:
   /**

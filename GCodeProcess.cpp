@@ -616,7 +616,7 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
 
         if (wincutmath::IsGreater(cur_code.Length, 2.0 * forbid_thc_distance)) {
           arc.Calc(x, y,  forbid_thc_distance); // calc the end point at disable THC
-          arc.Calc(x2, y2, cur_code.Length - forbid_thc_distance); // calc the start point at enable THC          
+          arc.Calc(x2, y2, cur_code.Length - forbid_thc_distance); // calc the start point at enable THC
         } else {
           GCodeStruct M46_code = cur_code;
           M46_code.Name = M46;
@@ -628,7 +628,7 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
         }
       } else {
         process_code.push_back(cur_code);
-        continue;        
+        continue;
       }
       GCodeStruct insert_code = cur_code;
       insert_code.X = x2;
@@ -661,6 +661,8 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
       insert_code.Y0 = y;
       process_code.push_back(insert_code);
     }
+  } else {
+    process_code = g_code;
   }
 }
 

@@ -583,7 +583,7 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
                                     double forbid_thc_distance,
                                     double forbid_thc_speed_percent,
                                     double global_speed, bool F_forbid) {
-  
+
   if (forbid_thc_distance > 0) {
     for (size_t i = 0; i < g_code.size(); i++) {
       GCodeStruct cur_code = g_code[i];
@@ -662,3 +662,5 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
       process_code.push_back(insert_code);
     }
   }
+}
+

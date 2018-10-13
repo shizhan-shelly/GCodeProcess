@@ -546,7 +546,7 @@ void GCodeProcess::BreakArcPocess(const std::vector<GCodeStruct> &g_code,
                                   std::vector<GCodeStruct> &process_code,
                                   double break_arc_time,
                                   double global_speed, bool F_forbid) {
-  
+
   if (math::IsEqual(break_arc_time, 0)) {
     process_code = g_code;
     return ;
@@ -596,7 +596,7 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
             cur_code.X, cur_code.Y,
             MIN(cur_code.X0, cur_code.X),
             MAX(cur_code.X0, cur_code.X));
-        
+
         if (wincutmath::IsGreater(cur_code.Length, 2.0 * forbid_thc_distance)) {
           line.Calc(x, y, cur_code.X0, cur_code.Y0, cur_code.X, cur_code.Y, forbid_thc_distance); // calc the end point at disable THC
           line.Calc(x2, y2, cur_code.X0, cur_code.Y0, cur_code.X, cur_code.Y, cur_code.Length - forbid_thc_distance); // calc the start point at enable THC
@@ -613,7 +613,7 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
         wincutmath::Arc arc(cur_code.I, cur_code.J, cur_code.R,
             cur_code.X0, cur_code.Y0, cur_code.X, cur_code.Y,
             cur_code.Name == G02 ? wincutmath::CW : wincutmath::CCW);
-        
+
         if (wincutmath::IsGreater(cur_code.Length, 2.0 * forbid_thc_distance)) {
           arc.Calc(x, y,  forbid_thc_distance); // calc the end point at disable THC
           arc.Calc(x2, y2, cur_code.Length - forbid_thc_distance); // calc the start point at enable THC          
@@ -634,28 +634,28 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
       insert_code.X = x2;
       insert_code.Y = y2;
       process_code.push_back(insert_code);
-      
+
       insert_code.X0 = x2;
       insert_code.Y0 = y2;
       insert_code.X = x2;
       insert_code.Y = y2;
       insert_code.Name = M47;
       process_code.push_back(insert_code);
-      
+
       insert_code = cur_code;
       insert_code.X0 = x2;
       insert_code.Y0 = y2;
       insert_code.X = x;
       insert_code.Y = y;
       process_code.push_back(insert_code);
-      
+
       insert_code.X0 = x;
       insert_code.Y0 = y;
       insert_code.X = x;
       insert_code.Y = y;
       insert_code.Name = M46;
       process_code.push_back(insert_code);
-      
+
       insert_code = cur_code;
       insert_code.X0 = x;
       insert_code.Y0 = y;

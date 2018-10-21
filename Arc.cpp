@@ -79,9 +79,9 @@ double Arc::ArcLength() {
 
   double arc_angle = 0;
   if (clockwise_ == CW) {
-    arc_angle = cross_product_z < 0 ? acos(cosine) : 2 * math::PI - acos(cosine);
+    arc_angle = cross_product_z < 0 ? acos(cosine) : 2 * PI - acos(cosine);
   } else {
-    arc_angle = cross_product_z > 0 ? acos(cosine) : 2 * math::PI - acos(cosine);
+    arc_angle = cross_product_z > 0 ? acos(cosine) : 2 * PI - acos(cosine);
   }
 
   return radius_ * arc_angle;

@@ -51,4 +51,11 @@ int CircleIntersector(const Circle &circle1, const Circle &circle2,
   return rtn;
 }
 
+double acos(double cosine) {
+  math::Float Cosine = math::Float(cosine);
+  Cosine = min(Cosine, 1.);
+  Cosine = max(Cosine, -1.);
+  return acos(Cosine).ToDouble();
+}
+
 } // namespace math

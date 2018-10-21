@@ -78,6 +78,8 @@ inline double sqr(double x) {
 int CircleIntersector(const Circle &circle1, const Circle &circle2,
     D_Point &point1, D_Point &point2);
 
+double acos(double cosine);
+
 } // namespace math
 
 #endif // MATH_H__

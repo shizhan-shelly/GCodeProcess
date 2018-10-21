@@ -33,7 +33,7 @@ bool GCodeParse::ReadGCode(const std::string &file_name,
   std::string line_text = "";
   while (getline(in_file, line_text)) {
     if (line_text.empty()) {
-      continue;
+      continue
     }
     ToUppercase(line_text);
     code_lines.push_back(TrimCodeLine(line_text));
@@ -165,9 +165,9 @@ double GCodeParse::GetArcAngle(const GCodeStruct &arc_code) {
       (arc_code.Y0 - arc_code.J) * (arc_code.X - arc_code.I);
 
   if (arc_code.Name == G02) {
-    return cross_product_z < 0 ? acos(cosine) : 2 * math::PI - acos(cosine);
+    return cross_product_z < 0 ? acos(cosine) : 2 * PI - acos(cosine);
   } else if (arc_code.Name == G03) {
-    return cross_product_z > 0 ? acos(cosine) : 2 * math::PI - acos(cosine);
+    return cross_product_z > 0 ? acos(cosine) : 2 * PI - acos(cosine);
   } else {
     return 0.;
   }

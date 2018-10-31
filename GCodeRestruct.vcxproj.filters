@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="src\CurveFitting">
+      <UniqueIdentifier>{19154373-2ae7-4302-b1f5-82ecc0bf96d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Kerf">
+      <UniqueIdentifier>{a922c87c-24bd-4179-bd66-fb7faf92b6cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\math">
+      <UniqueIdentifier>{75fef4ab-2a74-42e8-85c1-4ce086537d0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Process">
+      <UniqueIdentifier>{53ef327a-3289-48f3-bbb5-9dd0b2f6229f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\GCodeProcess.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WaistHoleCodeRebuild.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CircleHoleCodeRebuild.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HoleCodeRebuild.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\curvefitting\SimpleLinearFitting.cpp">
+      <Filter>src\CurveFitting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\Line.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\Circle.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\Arc.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GCodeParse.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\process\PlasmaProcess.cpp">
+      <Filter>src\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="src\process\ProcessFactory.cpp">
+      <Filter>src\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HyperthermCircleHoleCodeRebuild.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GCodeRestruct.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\mymath.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\D_Point.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\GCodeDefinition.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GCodeProcess.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WaistHoleCodeRebuild.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CircleHoleCodeRebuild.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HoleCodeRebuild.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\curvefitting\SimpleLinearFitting.h">
+      <Filter>src\CurveFitting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\mymath.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\Line.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\Circle.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\Arc.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GCodeParse.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\process\PlasmaProcess.h">
+      <Filter>src\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="src\process\ProcessFactory.h">
+      <Filter>src\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="src\process\AbstractProcess.h">
+      <Filter>src\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="src\process\ProcessVariable.h">
+      <Filter>src\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HyperthermCircleHoleCodeRebuild.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GCodeRestruct.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\D_Point.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

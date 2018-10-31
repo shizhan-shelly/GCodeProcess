@@ -1,0 +1,25 @@
+#Compiled Object files
+*.obj
+*.o
+
+#Precompiled header files
+*.pch
+
+#Compiled Dynamic libraries
+*.dll
+*.so
+
+#Compiled Static libraries
+*.a
+*.lib
+
+#Executables
+*.exe
+*.out
+
+#Customize
+*.suo
+*.user
+/bin
+/lib
+/tmp

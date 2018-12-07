@@ -14,13 +14,9 @@ int main(int argc, char *argv[]) {
 	//double cutting_speed_hole = 2000;
 	//double thickness = 1.5;
 	//double down_slope = 0.2;
-	//std::vector<std::string> code_lines;
   //GCodeProcess code_process;
 	//code_process.GCodeRebuild(argv[1], cutting_kerf_quality, cutting_kerf_hole,
-	//	  cutting_speed_quality, cutting_speed_hole, thickness, down_slope, code_lines);
-
-	//GCodeParse code_parse;
-  //code_parse.WriteGCode("result.txt", code_lines);
+	//	  cutting_speed_quality, cutting_speed_hole, thickness, down_slope);
 
   //Kerf kerf;
   //kerf.SetKerfValue(0.95);

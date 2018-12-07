@@ -30,8 +30,7 @@ class GCodeProcess {
   void GCodeRebuild(const std::string &file_name,
       double cutting_kerf_quality, double cutting_kerf_hole,
       double cutting_speed_quality, double cutting_speed_hole,
-      double thickness, double down_slope,
-      std::vector<std::string> &code_lines);
+      double thickness, double down_slope);
 
   void GCodeRebuildHypertherm(const std::string &file_name,
       double outside_contour_cut_speed, double thickness);
@@ -67,12 +66,6 @@ class GCodeProcess {
 
   bool IsWaistShape(const std::vector<GCodeStruct> &closed_shape);
 
-  void Calculate(double cutting_kerf_quality, double cutting_kerf_hole,
-      double cutting_speed_quality, double cutting_speed_hole, 
-      double hole_diameter, double thickness, double down_slope,
-      double &cutting_kerf_hole_r, double &cutting_speed_hole_r,
-      double &US, double &PA);
-
   double GetWaistHoleRadius(const std::vector<GCodeStruct> &g_code,
       size_t begin_index, size_t code_count);
 
@@ -97,6 +90,8 @@ class GCodeProcess {
 
   double kerf_hole_;
   double speed_hole_;
+  double lead_in_speed_;
+  double overburn_speed_;
   double US_;
   double PA_;
 

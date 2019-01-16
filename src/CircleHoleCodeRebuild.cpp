@@ -5,8 +5,6 @@
 
 #include <assert.h>
 
-#include "math/mymath.h"
-
 CircleHoleCodeRebuild::CircleHoleCodeRebuild() : HoleCodeRebuild() {}
 
 CircleHoleCodeRebuild::~CircleHoleCodeRebuild() {}

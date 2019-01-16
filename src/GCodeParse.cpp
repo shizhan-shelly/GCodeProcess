@@ -525,27 +525,6 @@ void GCodeParse::CalculateGCode(std::vector<GCodeStruct> &g_code) {
   }
 }
 
-void GCodeParse::SplitCutCode(const std::vector<GCodeStruct> &g_code,
-    std::vector<std::vector<GCodeStruct> > &cut_code) {
-
-  cut_code.clear();
-  for (size_t i = 0; i < g_code.size(); i++) {
-    if (g_code[i].Name == M07) {
-      std::vector<GCodeStruct> section_codes;
-      size_t j = i + 1;
-      while (j < g_code.size()) {
-        if (g_code[j].Name == M08) {
-          break;
-        }
-        section_codes.push_back(g_code[j]);
-        j++;
-      }
-      cut_code.push_back(section_codes);
-	    i = j;
-		}
-  }
-}
-
 bool GCodeParse::AsynchronousStopGCode(const std::vector<GCodeStruct> &g_code,
                                        std::vector<GCodeStruct> &new_code,
                                        bool F_forbid, double global_speed,

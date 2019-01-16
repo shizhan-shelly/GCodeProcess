@@ -163,12 +163,33 @@ void GCodeProcess::GCodeInvestigate(const std::vector<GCodeStruct> &g_code,
                                     std::map<size_t, size_t> &waist_shape) {
 
   std::vector<std::vector<GCodeStruct> > cut_code;
-  GCodeParse::SplitCutCode(g_code, cut_code);
+  SplitCutCode(g_code, cut_code);
 
   circle_shape.clear();
   waist_shape.clear();
   for (size_t i = 0; i < cut_code.size(); i++) {
     ClosedShapeIntercept(cut_code[i], circle_shape, waist_shape);
+  }
+}
+
+void GCodeProcess::SplitCutCode(const std::vector<GCodeStruct> &g_code,
+    std::vector<std::vector<GCodeStruct> > &cut_code) {
+
+  cut_code.clear();
+  for (size_t i = 0; i < g_code.size(); i++) {
+    if (g_code[i].Name == M07) {
+      std::vector<GCodeStruct> section_codes;
+      size_t j = i + 1;
+      while (j < g_code.size()) {
+        if (g_code[j].Name == M08) {
+          break;
+        }
+        section_codes.push_back(g_code[j]);
+        j++;
+      }
+      cut_code.push_back(section_codes);
+      i = j;
+    }
   }
 }
 

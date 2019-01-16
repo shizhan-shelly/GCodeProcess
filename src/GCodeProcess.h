@@ -46,6 +46,10 @@ class GCodeProcess {
                         std::vector<size_t> &circle_shape,
                         std::map<size_t, size_t> &waist_shape);
 
+  // Split G codes with "M08" and "M07" into several section codes.
+  void SplitCutCode(const std::vector<GCodeStruct> &g_code,
+      std::vector<std::vector<GCodeStruct> > &cut_code);
+
   /**
    * Find out the circle-shape code's line number and waist-shape code's line
    * number from one section of cut code.

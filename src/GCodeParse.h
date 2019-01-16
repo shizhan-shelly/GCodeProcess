@@ -27,10 +27,6 @@ class GCodeParse {
 
   void CalculateGCode(std::vector<GCodeStruct> &g_code);
 
-  // Split G codes with "M08" and "M07" into several section codes.
-  static void SplitCutCode(const std::vector<GCodeStruct> &g_code,
-      std::vector<std::vector<GCodeStruct> > &cut_code);
-
   bool AsynchronousStopGCode(const std::vector<GCodeStruct> &g_code,
                              std::vector<GCodeStruct> &new_code,
                              bool F_forbid, double global_speed,

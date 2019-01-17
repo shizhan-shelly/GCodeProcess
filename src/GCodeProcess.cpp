@@ -20,9 +20,7 @@ GCodeProcess::GCodeProcess() {}
 GCodeProcess::~GCodeProcess() {}
 
 void GCodeProcess::GCodeRebuild(const std::string &file_name,
-    double cutting_kerf_quality, double cutting_kerf_hole,
-    double cutting_speed_quality, double cutting_speed_hole,
-    double thickness, double down_slope) {
+    double cutting_speed_quality, double thickness) {
 
   GCodeParse parse;
   std::vector<std::string> src_lines;

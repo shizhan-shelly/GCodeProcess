@@ -18,9 +18,7 @@ class GCodeProcess {
   ~GCodeProcess();
 
   void GCodeRebuild(const std::string &file_name,
-      double cutting_kerf_quality, double cutting_kerf_hole,
-      double cutting_speed_quality, double cutting_speed_hole,
-      double thickness, double down_slope);
+      double cutting_speed_quality, double thickness);
 
   void GCodeRebuildHypertherm(const std::string &file_name,
       double outside_contour_cut_speed, double thickness);

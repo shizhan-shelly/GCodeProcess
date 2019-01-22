@@ -5,7 +5,6 @@
 
 #include <assert.h>
 
-#include "math/D_Point.h"
 #include "math/mymath.h"
 
 WaistHoleCodeRebuild::WaistHoleCodeRebuild() : HoleCodeRebuild() {}

@@ -13,6 +13,11 @@ class GCodeRestruct {
       double &hole_speed, double &lead_in_speed, double &hole_kerf,
       double &asynchronous_stop, int &disable_ahc, double &US);
 
+  void GetKjellbergProcessParameter(double hole_diameter,
+      double &hole_speed, double &lead_in_speed, double &overburn_speed,
+      double &hole_kerf,
+      double &US, double &PA);
+
 }; // class GCodeRestruct
 
 extern GCodeRestruct theApp;

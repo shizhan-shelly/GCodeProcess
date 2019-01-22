@@ -8,19 +8,12 @@
 #include "kerf/Kerf.h"
 
 int main(int argc, char *argv[]) {
-	//double cutting_kerf_quality = 2.0;
-	//double cutting_kerf_hole = 1.0;
-	//double cutting_speed_quality = 5000;
-	//double cutting_speed_hole = 2000;
-	//double thickness = 1.5;
-	//double down_slope = 0.2;
-	//std::vector<std::string> code_lines;
+  //double cutting_kerf_quality = 2.0;
+  //double cutting_speed_quality = 5000;
+  //double thickness = 1.5;
   //GCodeProcess code_process;
-	//code_process.GCodeRebuild(argv[1], cutting_kerf_quality, cutting_kerf_hole,
-	//	  cutting_speed_quality, cutting_speed_hole, thickness, down_slope, code_lines);
-
-	//GCodeParse code_parse;
-  //code_parse.WriteGCode("result.txt", code_lines);
+  //code_process.GCodeRebuild(argv[1], cutting_kerf_quality, cutting_speed_quality,
+  //thickness);
 
   //Kerf kerf;
   //kerf.SetKerfValue(0.95);

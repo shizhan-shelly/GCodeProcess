@@ -20,10 +20,8 @@ GCodeProcess::GCodeProcess() {}
 GCodeProcess::~GCodeProcess() {}
 
 void GCodeProcess::GCodeRebuild(const std::string &file_name,
-    double cutting_kerf_quality, double cutting_kerf_hole,
-    double cutting_speed_quality, double cutting_speed_hole,
-    double thickness, double down_slope,
-    std::vector<std::string> &code_lines) {
+    double cutting_kerf_quality, double cutting_speed_quality,
+    double thickness) {
 
   GCodeParse parse;
   std::vector<std::string> src_lines;
@@ -46,14 +44,13 @@ void GCodeProcess::GCodeRebuild(const std::string &file_name,
             IsSmallHole(g_code[i].R, thickness)) {
 
           PreRebuild(rebuild_codes);
-          Calculate(cutting_kerf_quality, cutting_kerf_hole, cutting_speed_quality,
-              cutting_speed_hole, g_code[i].R * 2, thickness, down_slope, kerf_hole_,
-              speed_hole_, US_, PA_);
+          theApp.GetKjellbergProcessParameter(g_code[i].R * 2, speed_hole_,
+              lead_in_speed_, overburn_speed_, kerf_hole_, US_, PA_);
 
           CircleHoleCodeRebuild circle_build;
           circle_build.RebuildCircleHoleCode(rebuild_codes,
               g_code, g_code[i].LineNoInTotalFile, kerf_hole_, speed_hole_,
-              speed_hole_, speed_hole_,
+              lead_in_speed_, overburn_speed_,
               US_, PA_);
 
           circle_build.RebuildLeadOutCode(rebuild_codes, g_code, *circle_iter);
@@ -71,14 +68,13 @@ void GCodeProcess::GCodeRebuild(const std::string &file_name,
             IsSmallHole(radius, thickness)) {
 
           PreRebuild(rebuild_codes);
-          Calculate(cutting_kerf_quality, cutting_kerf_hole, cutting_speed_quality,
-              cutting_speed_hole, 2 * radius, thickness, down_slope, kerf_hole_,
-              speed_hole_, US_, PA_);
+          theApp.GetKjellbergProcessParameter(radius * 2, speed_hole_,
+              lead_in_speed_, overburn_speed_, kerf_hole_, US_, PA_);
 
           WaistHoleCodeRebuild waist_build;
           waist_build.RebuildWaistHoleCode(rebuild_codes,
               g_code, g_code[i].LineNoInTotalFile, kerf_hole_, speed_hole_,
-              speed_hole_, speed_hole_,
+              lead_in_speed_, overburn_speed_,
               US_, PA_);
 
           waist_build.RebuildLeadOutCode(rebuild_codes, g_code, waist_iter->first);
@@ -89,15 +85,19 @@ void GCodeProcess::GCodeRebuild(const std::string &file_name,
         waist_iter++;
       }
     }
+    OutsideContourKerfRebuild(g_code[i], cutting_kerf_quality);
     OutsideContourSpeedRebuild(g_code[i], cutting_speed_quality);
     rebuild_codes.push_back(g_code[i]);
   }
 
+  std::vector<std::string> code_lines;
   parse.GenerateGCode(rebuild_codes, code_lines);
+  parse.WriteGCode(file_name, code_lines);
 }
 
 void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
-    double outside_contour_cut_speed, double thickness) {
+    double outside_contour_kerf, double outside_contour_cut_speed,
+    double thickness) {
 
   GCodeParse parse;
   std::vector<std::string> src_lines;
@@ -150,6 +150,7 @@ void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
       }
       circle_iter++;
     }
+    OutsideContourKerfRebuild(g_code[i], outside_contour_kerf);
     OutsideContourSpeedRebuild(g_code[i], outside_contour_cut_speed);
     rebuild_codes.push_back(g_code[i]);
   }
@@ -164,12 +165,33 @@ void GCodeProcess::GCodeInvestigate(const std::vector<GCodeStruct> &g_code,
                                     std::map<size_t, size_t> &waist_shape) {
 
   std::vector<std::vector<GCodeStruct> > cut_code;
-  GCodeParse::SplitCutCode(g_code, cut_code);
+  SplitCutCode(g_code, cut_code);
 
   circle_shape.clear();
   waist_shape.clear();
   for (size_t i = 0; i < cut_code.size(); i++) {
     ClosedShapeIntercept(cut_code[i], circle_shape, waist_shape);
+  }
+}
+
+void GCodeProcess::SplitCutCode(const std::vector<GCodeStruct> &g_code,
+    std::vector<std::vector<GCodeStruct> > &cut_code) {
+
+  cut_code.clear();
+  for (size_t i = 0; i < g_code.size(); i++) {
+    if (g_code[i].Name == M07) {
+      std::vector<GCodeStruct> section_codes;
+      size_t j = i + 1;
+      while (j < g_code.size()) {
+        if (g_code[j].Name == M08) {
+          break;
+        }
+        section_codes.push_back(g_code[j]);
+        j++;
+      }
+      cut_code.push_back(section_codes);
+      i = j;
+    }
   }
 }
 
@@ -374,48 +396,6 @@ bool GCodeProcess::IsWaistShape(const std::vector<GCodeStruct> &closed_shape) {
 	return true;
 }
 
-void GCodeProcess::Calculate(double cutting_kerf_quality, double cutting_kerf_hole,
-    double cutting_speed_quality, double cutting_speed_hole, 
-    double hole_diameter, double thickness, double down_slope,
-    double &cutting_kerf_hole_r, double &cutting_speed_hole_r,
-    double &US, double &PA) {
-
-  double N2 = hole_diameter / thickness;
-  double N8 = cutting_kerf_hole;
-  double N17 = cutting_kerf_quality;
-  double N18 = N17 - N8;
-  double N19 = ((N2 - 1) * N18) + N8;
-  double N20 = ((0.8 - 1) * N18) + N8;
-  if (N2 <0.8) {
-    cutting_kerf_hole_r = N20;
-  } else {
-    if (N2 > 2) {
-      cutting_kerf_hole_r = N17;
-    } else {
-      cutting_kerf_hole_r = N19;
-    }
-  }
-  double N3 = cutting_speed_hole;
-  double N4 = cutting_speed_quality;
-  double N5 = N4- N3;
-  double N6 = ((0.8 - 1) * N5) + N3;
-  double O2 = ((N2 - 1) * N5) + N3;
-  if (N2 < 0.8) {
-    cutting_speed_hole_r = N6;
-  } else {
-    if (N2 > 2) {
-      cutting_speed_hole_r = N4;
-    } else {
-      cutting_speed_hole_r = O2;
-    }
-  }
-  down_slope *= 1000; // unit: ms
-  double DS = (down_slope / 60) * (cutting_speed_hole_r / 1000);
-  double D33 = down_slope + 50;
-  US = DS + (1.5 * cutting_kerf_hole);
-  PA = (cutting_speed_hole_r / 60) * (D33 / 1000);
-}
-
 double GCodeProcess::GetWaistHoleRadius(const std::vector<GCodeStruct> &g_code,
     size_t begin_index, size_t code_count) {
 
@@ -494,6 +474,15 @@ void GCodeProcess::OutsideContourSpeedRebuild(GCodeStruct &g_code,
   if (g_code.Name == G01 || g_code.Name == G02 || g_code.Name == G03) {
     g_code.OmitF = false;
     g_code.F = cutting_speed;
+  }
+}
+
+void GCodeProcess::OutsideContourKerfRebuild(GCodeStruct &g_code,
+                                             double cutting_kerf) {
+
+  if (g_code.Name == G41 || g_code.Name == G42) {
+    g_code.OmitKerf = false;
+    g_code.KerfValue = cutting_kerf / 2;
   }
 }
 

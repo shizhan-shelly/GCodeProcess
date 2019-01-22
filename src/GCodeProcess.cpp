@@ -20,7 +20,8 @@ GCodeProcess::GCodeProcess() {}
 GCodeProcess::~GCodeProcess() {}
 
 void GCodeProcess::GCodeRebuild(const std::string &file_name,
-    double cutting_speed_quality, double thickness) {
+    double cutting_kerf_quality, double cutting_speed_quality,
+    double thickness) {
 
   GCodeParse parse;
   std::vector<std::string> src_lines;
@@ -84,6 +85,7 @@ void GCodeProcess::GCodeRebuild(const std::string &file_name,
         waist_iter++;
       }
     }
+    OutsideContourKerfRebuild(g_code[i], cutting_kerf_quality);
     OutsideContourSpeedRebuild(g_code[i], cutting_speed_quality);
     rebuild_codes.push_back(g_code[i]);
   }
@@ -94,7 +96,8 @@ void GCodeProcess::GCodeRebuild(const std::string &file_name,
 }
 
 void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
-    double outside_contour_cut_speed, double thickness) {
+    double outside_contour_kerf, double outside_contour_cut_speed,
+    double thickness) {
 
   GCodeParse parse;
   std::vector<std::string> src_lines;
@@ -147,6 +150,7 @@ void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
       }
       circle_iter++;
     }
+    OutsideContourKerfRebuild(g_code[i], outside_contour_kerf);
     OutsideContourSpeedRebuild(g_code[i], outside_contour_cut_speed);
     rebuild_codes.push_back(g_code[i]);
   }
@@ -470,6 +474,15 @@ void GCodeProcess::OutsideContourSpeedRebuild(GCodeStruct &g_code,
   if (g_code.Name == G01 || g_code.Name == G02 || g_code.Name == G03) {
     g_code.OmitF = false;
     g_code.F = cutting_speed;
+  }
+}
+
+void GCodeProcess::OutsideContourKerfRebuild(GCodeStruct &g_code,
+                                             double cutting_kerf) {
+
+  if (g_code.Name == G41 || g_code.Name == G42) {
+    g_code.OmitKerf = false;
+    g_code.KerfValue = cutting_kerf / 2;
   }
 }
 

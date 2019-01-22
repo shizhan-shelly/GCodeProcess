@@ -18,10 +18,12 @@ class GCodeProcess {
   ~GCodeProcess();
 
   void GCodeRebuild(const std::string &file_name,
-      double cutting_speed_quality, double thickness);
+      double cutting_kerf_quality, double cutting_speed_quality,
+      double thickness);
 
   void GCodeRebuildHypertherm(const std::string &file_name,
-      double outside_contour_cut_speed, double thickness);
+      double outside_contour_kerf, double outside_contour_cut_speed,
+      double thickness);
 
   void BreakArcPocess(const std::vector<GCodeStruct> &g_code,
                       std::vector<GCodeStruct> &process_code,
@@ -79,6 +81,8 @@ class GCodeProcess {
   bool IsSmallHoleHypertherm(double radius, double thickness);
 
   void OutsideContourSpeedRebuild(GCodeStruct &g_code, double cutting_speed);
+
+  void OutsideContourKerfRebuild(GCodeStruct &g_code, double cutting_kerf);
 
   // Only before process small hole contour, pop up the lead-in code of inside
   // until the G00 code. Only after process small hole contour, throw away the

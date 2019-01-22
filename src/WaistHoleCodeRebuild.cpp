@@ -7,6 +7,8 @@
 
 #include "math/mymath.h"
 
+using namespace math;
+
 WaistHoleCodeRebuild::WaistHoleCodeRebuild() : HoleCodeRebuild() {}
 
 WaistHoleCodeRebuild::~WaistHoleCodeRebuild() {}
@@ -33,7 +35,7 @@ void WaistHoleCodeRebuild::RebuildWaistHoleCode(
     assert(false);
     return ;
   }
-  if (math::IsEqual(arc_codes[0].Y0, arc_codes[0].Y)) {
+  if (IsEqual(arc_codes[0].Y0, arc_codes[0].Y)) {
     if (arc_codes[0].Name == G02) {
       if (arc_codes[0].X0 < arc_codes[0].X) {
         RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, PA);
@@ -218,12 +220,12 @@ std::vector<GCodeStruct> WaistHoleCodeRebuild::OverburnArcCodes(
     return arc_codes;
   }
   double tan_angle0;
-  if (math::IsEqual(arc_code.Y0, arc_code.J)) {
+  if (IsEqual(arc_code.Y0, arc_code.J)) {
     tan_angle0 = 0;
   } else if (arc_code.Y0 < arc_code.J) {
     tan_angle0 = fabs(arc_code.X0 - arc_code.I) / fabs(arc_code.Y0 - arc_code.J);
   } else {
-    if (!math::IsEqual(arc_code.X0, arc_code.I)) {
+    if (!IsEqual(arc_code.X0, arc_code.I)) {
       tan_angle0 = fabs(arc_code.Y0 - arc_code.J) / fabs(arc_code.X0 - arc_code.I);
     } else {
       tan_angle0 = 0;

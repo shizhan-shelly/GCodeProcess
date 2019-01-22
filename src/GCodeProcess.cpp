@@ -15,6 +15,8 @@
 
 extern GCodeRestruct theApp;
 
+using namespace math;
+
 GCodeProcess::GCodeProcess() {}
 
 GCodeProcess::~GCodeProcess() {}
@@ -319,13 +321,13 @@ bool GCodeProcess::IsWaistShape(const std::vector<GCodeStruct> &closed_shape) {
       return false;
     } else {
       if (iter->Name != direction_name ||
-          !math::IsEqual(iter->Length, waist_arc_length)) {
+          !IsEqual(iter->Length, waist_arc_length)) {
 
         return false;
       } else {
         iter++;
         if (iter == closed_shape.end()) {
-          if (!math::IsEqual(first_line_len, second_line_len)) {
+          if (!IsEqual(first_line_len, second_line_len)) {
             return false;
           }
         } else {
@@ -336,7 +338,7 @@ bool GCodeProcess::IsWaistShape(const std::vector<GCodeStruct> &closed_shape) {
               first_line_len += iter->Length;
               iter++;
               if (iter == closed_shape.end()) {
-                return math::IsEqual(first_line_len, second_line_len);
+                return IsEqual(first_line_len, second_line_len);
               }
             }
             return false;
@@ -370,7 +372,7 @@ bool GCodeProcess::IsWaistShape(const std::vector<GCodeStruct> &closed_shape) {
       return false;
     } else {
       if (iter->Name != direction_name ||
-          !math::IsEqual(iter->Length, waist_arc_length)) {
+          !IsEqual(iter->Length, waist_arc_length)) {
 
         return false;
       } else {
@@ -387,7 +389,7 @@ bool GCodeProcess::IsWaistShape(const std::vector<GCodeStruct> &closed_shape) {
         second_line_len += iter->Length;
         iter++;
         if (iter == closed_shape.end()) {
-          return math::IsEqual(first_line_len, second_line_len);
+          return IsEqual(first_line_len, second_line_len);
         }
       }
       return false;
@@ -430,16 +432,16 @@ bool GCodeProcess::IsInsideContour(const std::vector<GCodeStruct> &g_code,
 bool GCodeProcess::IsSmallHole(double radius, double thickness) {
   static const double accuracy = 0.01;
   double diameter = 2 * radius;
-  return math::IsLesser(diameter, 2 * thickness + accuracy) && math::IsGreater(diameter, 0.8 * thickness - accuracy)
-      || math::IsEqual(diameter, 2 * thickness + accuracy) || math::IsEqual(diameter, 0.8 * thickness - accuracy);
+  return IsLesser(diameter, 2 * thickness + accuracy) && IsGreater(diameter, 0.8 * thickness - accuracy)
+      || IsEqual(diameter, 2 * thickness + accuracy) || IsEqual(diameter, 0.8 * thickness - accuracy);
 
 }
 
 bool GCodeProcess::IsSmallHoleHypertherm(double radius, double thickness) {
   static const double accuracy = 0.01;
   double diameter = 2 * radius;
-  return math::IsLesser(diameter, 2.5 * thickness + accuracy) && math::IsGreater(diameter, thickness - accuracy)
-      || math::IsEqual(diameter, 2.5 * thickness + accuracy) || math::IsEqual(diameter, thickness - accuracy);
+  return IsLesser(diameter, 2.5 * thickness + accuracy) && IsGreater(diameter, thickness - accuracy)
+      || IsEqual(diameter, 2.5 * thickness + accuracy) || IsEqual(diameter, thickness - accuracy);
 
 }
 
@@ -493,7 +495,7 @@ void GCodeProcess::CloseArcVolProcess(std::vector<GCodeStruct> &segment_code,
   std::vector<GCodeStruct>::iterator i = segment_code.end() - 1;
   for (double sum_length = 0.; i > segment_code.begin(); i--) {
     remain_length = advance_dis - sum_length;
-    if (!math::IsLesser(i->Length, remain_length)) {
+    if (!IsLesser(i->Length, remain_length)) {
       break;
     }
     sum_length += i->Length;
@@ -536,7 +538,7 @@ void GCodeProcess::BreakArcPocess(const std::vector<GCodeStruct> &g_code,
                                   double break_arc_time,
                                   double global_speed, bool F_forbid) {
 
-  if (math::IsEqual(break_arc_time, 0)) {
+  if (IsEqual(break_arc_time, 0)) {
     process_code = g_code;
     return ;
   }
@@ -586,7 +588,7 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
             MIN(cur_code.X0, cur_code.X),
             MAX(cur_code.X0, cur_code.X));
 
-        if (math::IsGreater(cur_code.Length, 2.0 * forbid_thc_distance)) {
+        if (IsGreater(cur_code.Length, 2.0 * forbid_thc_distance)) {
           line.Calc(x, y, cur_code.X0, cur_code.Y0, cur_code.X, cur_code.Y, forbid_thc_distance); // calc the end point at disable THC
           line.Calc(x2, y2, cur_code.X0, cur_code.Y0, cur_code.X, cur_code.Y, cur_code.Length - forbid_thc_distance); // calc the start point at enable THC
         } else {
@@ -603,7 +605,7 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
             cur_code.X0, cur_code.Y0, cur_code.X, cur_code.Y,
             cur_code.Name == G02 ? math::CW : math::CCW);
 
-        if (math::IsGreater(cur_code.Length, 2.0 * forbid_thc_distance)) {
+        if (IsGreater(cur_code.Length, 2.0 * forbid_thc_distance)) {
           arc.Calc(x, y,  forbid_thc_distance); // calc the end point at disable THC
           arc.Calc(x2, y2, cur_code.Length - forbid_thc_distance); // calc the start point at enable THC
         } else {
@@ -654,4 +656,3 @@ void GCodeProcess::ForbidTHCProcess(const std::vector<GCodeStruct> &g_code,
     process_code = g_code;
   }
 }
-

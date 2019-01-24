@@ -4,6 +4,9 @@
 #ifndef GCODERESTRUCT_H__
 #define GCODERESTRUCT_H__
 
+#include <string>
+#include <vector>
+
 class GCodeRestruct {
  public:
   GCodeRestruct() {}
@@ -17,6 +20,10 @@ class GCodeRestruct {
       double &hole_speed, double &lead_in_speed, double &overburn_speed,
       double &hole_kerf,
       double &US, double &PA);
+
+ private:
+  std::string GetReferDiameter(double cur_diameter,
+      std::vector<std::string> selectable_diameter) const;
 
 }; // class GCodeRestruct
 

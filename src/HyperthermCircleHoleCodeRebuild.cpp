@@ -168,7 +168,7 @@ void HyperthermCircleHoleCodeRebuild::ModifyCircleHoleCode(
     double lead_in_speed, double over_burn_speed,
     double asynchronous_stop) {
 
-  std::vector<GCodeStruct>::iterator iter = rebuild_codes.end() -1;
+  std::vector<GCodeStruct>::iterator iter = rebuild_codes.end() - 1;
   for (; iter > rebuild_codes.begin(); iter--) {
     if (iter->Name != G01 && iter->Name != G02 && iter->Name != G03) {
       break;

@@ -3,6 +3,8 @@
 
 #include "GCodeRestruct.h"
 
+#include "math\mymath.h"
+
 GCodeRestruct theApp;
 
 void GCodeRestruct::GetHyperthermProcessParameter(double diameter,
@@ -13,7 +15,7 @@ void GCodeRestruct::GetHyperthermProcessParameter(double diameter,
   hole_speed = 1000;
   lead_in_speed = 1000;
   asynchronous_stop = -0.053;
-  disable_ahc = 0;
+  disable_ahc = 1;
   US = 3.1415926 * diameter / 4;
 }
 
@@ -66,4 +68,18 @@ void GCodeRestruct::GetKjellbergProcessParameter(double hole_diameter,
 
   lead_in_speed = hole_speed;
   overburn_speed = hole_speed;
+}
+
+std::string GCodeRestruct::GetReferDiameter(double cur_diameter,
+    std::vector<std::string> selectable_diameter) const {
+
+  // selectable_diameter vector has already been sorted by ASC.
+  for (size_t i = 0; i < selectable_diameter.size(); i++) {
+    if (selectable_diameter[i].find('*') == std::string::npos &&
+        !math::IsLesser(atof(selectable_diameter[i].c_str()), cur_diameter)) {
+
+      return selectable_diameter[i];
+    }
+  }
+  return "*";
 }

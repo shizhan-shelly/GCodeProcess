@@ -53,6 +53,9 @@ void GCodeParse::ParseGCode(const std::vector<std::string> &code_lines,
   double start_X = 0.;
   double start_Y = 0.;
 
+  refer_point_.x = 0.;
+  refer_point_.y = 0.;
+
   GCodeStruct code_array;
   code_array.KerfDir = 0;
   code_array.ScaleFactor = 1;
@@ -422,6 +425,9 @@ void GCodeParse::GenerateGCode(const std::vector<GCodeStruct> &g_code,
      case G91:
       sprintf(GCODE, "G91\n");
       break;
+     case G92:
+      sprintf(GCODE, "G92 X%.3lf Y%.3lf\n", refer_point_.x, refer_point_.y);
+      break;
      case G99:
       sprintf(GCODE, "G99 X%.3lf Y%.3lf I%.3lf J%.3lf\n",
           g_code[i].ScaleFactor, g_code[i].RotateAngle,
@@ -663,6 +669,10 @@ void GCodeParse::ParseSecondary(GCodeStruct &g_code) {
    case G91:
     relative_absolute_ = Relative;
     break;
+   case G92:
+    refer_point_.x = g_code.X;
+    refer_point_.y = g_code.Y;
+    break;
    case G40:
     g_code.KerfDir = 0;
     break;
@@ -824,6 +834,9 @@ void GCodeParse::ParseXArgument(const std::string &code_line,
   }
   if (g_code.Name == G99) {
     g_code.ScaleFactor = value;
+  } else if (g_code.Name == G92) {
+    value = foot_metric_ == MetricSystem ? value : value * FOOT_METRIC_FACTOR;
+    g_code.X = value;
   } else {
     value = foot_metric_ == MetricSystem ? value : value * FOOT_METRIC_FACTOR;
     g_code.X = relative_absolute_ == Absolute ? value : g_code.X0 + value;
@@ -839,6 +852,9 @@ void GCodeParse::ParseYArgument(const std::string &code_line,
   }
   if (g_code.Name == G99) {
     g_code.RotateAngle = value;
+  } else if (g_code.Name == G92) {
+    value = foot_metric_ == MetricSystem ? value : value * FOOT_METRIC_FACTOR;
+    g_code.Y = value;
   } else {
     value = foot_metric_ == MetricSystem ? value : value * FOOT_METRIC_FACTOR;
     g_code.Y = relative_absolute_ == Absolute ? value : g_code.Y0 + value;

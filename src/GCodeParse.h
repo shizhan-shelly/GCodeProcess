@@ -108,6 +108,7 @@ class GCodeParse {
 
   FootMetricSystem foot_metric_;
   RelorAbsCoordinate relative_absolute_;
+  Point_t refer_point_;
   bool m07_m08_flag_;
 
 }; // class GCodeParse

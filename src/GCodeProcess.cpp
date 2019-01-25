@@ -47,13 +47,14 @@ void GCodeProcess::GCodeRebuild(const std::string &file_name,
 
           PreRebuild(rebuild_codes);
           theApp.GetKjellbergProcessParameter(g_code[i].R * 2, speed_hole_,
-              lead_in_speed_, overburn_speed_, kerf_hole_, US_, PA_);
+              lead_in_speed_, overburn_speed_, kerf_hole_, asynchronous_stop_,
+              US_, PA_);
 
           CircleHoleCodeRebuild circle_build;
           circle_build.RebuildCircleHoleCode(rebuild_codes,
               g_code, g_code[i].LineNoInTotalFile, kerf_hole_, speed_hole_,
               lead_in_speed_, overburn_speed_,
-              US_, PA_);
+              US_, asynchronous_stop_);
 
           circle_build.RebuildLeadOutCode(rebuild_codes, g_code, *circle_iter);
           PostRebuild(g_code, *circle_iter, i);
@@ -71,13 +72,14 @@ void GCodeProcess::GCodeRebuild(const std::string &file_name,
 
           PreRebuild(rebuild_codes);
           theApp.GetKjellbergProcessParameter(radius * 2, speed_hole_,
-              lead_in_speed_, overburn_speed_, kerf_hole_, US_, PA_);
+              lead_in_speed_, overburn_speed_, kerf_hole_, asynchronous_stop_,
+              US_, PA_);
 
           WaistHoleCodeRebuild waist_build;
           waist_build.RebuildWaistHoleCode(rebuild_codes,
               g_code, g_code[i].LineNoInTotalFile, kerf_hole_, speed_hole_,
               lead_in_speed_, overburn_speed_,
-              US_, PA_);
+              US_, asynchronous_stop_);
 
           waist_build.RebuildLeadOutCode(rebuild_codes, g_code, waist_iter->first);
           PostRebuild(g_code, waist_iter->first, i);

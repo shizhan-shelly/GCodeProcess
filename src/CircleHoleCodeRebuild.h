@@ -15,7 +15,7 @@ class CircleHoleCodeRebuild : public HoleCodeRebuild {
       const std::vector<GCodeStruct> &g_code, size_t circle_index,
       double kerf_hole, double speed_hole,
       double lead_in_speed, double over_burn_speed,
-      double US, double PA);
+      double US, double asynchronous_stop);
 
 }; // class CircleHoleCodeRebuild
 

@@ -21,7 +21,7 @@ void GCodeRestruct::GetHyperthermProcessParameter(double diameter,
 
 void GCodeRestruct::GetKjellbergProcessParameter(double hole_diameter,
     double &hole_speed, double &lead_in_speed, double &overburn_speed,
-    double &hole_kerf,
+    double &hole_kerf, double &asynchronous_stop,
     double &US, double &PA) {
 
   double cutting_kerf_hole = 1.0;
@@ -66,6 +66,7 @@ void GCodeRestruct::GetKjellbergProcessParameter(double hole_diameter,
   US = DS + (1.5 * cutting_kerf_hole);
   PA = (hole_speed / 60) * (D33 / 1000);
 
+  asynchronous_stop = D33 / 1000;
   lead_in_speed = hole_speed;
   overburn_speed = hole_speed;
 }

@@ -5,9 +5,6 @@
 
 #include <assert.h>
 
-#include "math/Arc.h"
-#include "math/mymath.h"
-
 HyperthermCircleHoleCodeRebuild::HyperthermCircleHoleCodeRebuild() : HoleCodeRebuild() {}
 
 HyperthermCircleHoleCodeRebuild::~HyperthermCircleHoleCodeRebuild() {}
@@ -61,44 +58,22 @@ void HyperthermCircleHoleCodeRebuild::RebuildCircleHoleCode(
   rebuild_codes.push_back(code_array);
 
   double arc_angle = GetOverburnArcAngle(US, iter->R);
-  //double close_arc_dis = (hole_speed / 60.0) * asynchronous_stop;
-  double close_arc_dis = ((hole_speed / 60.0) * asynchronous_stop) * iter->R / (iter->R - hole_kerf / 2);
 
   if (iter->Name == G02) {
-    if (math::IsLesser(close_arc_dis, 0)) {
-      code_array.Name = G02;
-      code_array.X0 = code_array.X;
-      code_array.Y0 = code_array.Y;
-      code_array.I = iter->I;
-      code_array.J = iter->J;
-      code_array.OmitF = false;
-      code_array.F = hole_speed;
-      math::Arc arc(code_array.I, code_array.J, code_array.R,
-          code_array.X0, code_array.Y0, code_array.X, code_array.Y, math::CW);
+    code_array.Name = G02;
+    code_array.X0 = code_array.X;
+    code_array.Y0 = code_array.Y;
+    code_array.I = iter->I;
+    code_array.J = iter->J;
+    code_array.OmitF = false;
+    code_array.F = hole_speed;
+    rebuild_codes.push_back(code_array);
 
-      if (arc.Calc(code_array.X, code_array.Y, fabs(close_arc_dis)) == -1) {
-        rebuild_codes.push_back(code_array);
-      } else {
-        rebuild_codes.push_back(code_array);
-        code_array.Name = M29;
-        code_array.X0 = code_array.X;
-        code_array.Y0 = code_array.Y;
-        rebuild_codes.push_back(code_array);
-        code_array.Name = G02;
-        code_array.X = iter->I;
-        code_array.Y = iter->J - iter->R;
-        rebuild_codes.push_back(code_array);
-      }
-    } else {
-      code_array.Name = G02;
-      code_array.X0 = code_array.X;
-      code_array.Y0 = code_array.Y;
-      code_array.I = iter->I;
-      code_array.J = iter->J;
-      code_array.OmitF = false;
-      code_array.F = hole_speed;
-      rebuild_codes.push_back(code_array);
-    }
+    code_array.Name = M50;
+    code_array.OmitAsynchronousStop = false;
+    code_array.AsynchronousStop = asynchronous_stop;
+    rebuild_codes.push_back(code_array);
+
     code_array.Name = G02;
     code_array.X0 = code_array.X;
     code_array.Y0 = code_array.Y;
@@ -108,40 +83,20 @@ void HyperthermCircleHoleCodeRebuild::RebuildCircleHoleCode(
     code_array.F = over_burn_speed;
     rebuild_codes.push_back(code_array);
   } else {
-    if (math::IsLesser(close_arc_dis, 0)) {
-      code_array.Name = G03;
-      code_array.X0 = code_array.X;
-      code_array.Y0 = code_array.Y;
-      code_array.I = iter->I;
-      code_array.J = iter->J;
-      code_array.OmitF = false;
-      code_array.F = hole_speed;
-      math::Arc arc(code_array.I, code_array.J, code_array.R,
-          code_array.X0, code_array.Y0, code_array.X, code_array.Y, math::CCW);
+    code_array.Name = G03;
+    code_array.X0 = code_array.X;
+    code_array.Y0 = code_array.Y;
+    code_array.I = iter->I;
+    code_array.J = iter->J;
+    code_array.OmitF = false;
+    code_array.F = hole_speed;
+    rebuild_codes.push_back(code_array);
 
-      if (arc.Calc(code_array.X, code_array.Y, fabs(close_arc_dis)) == -1) {
-        rebuild_codes.push_back(code_array);
-      } else {
-        rebuild_codes.push_back(code_array);
-        code_array.Name = M29;
-        code_array.X0 = code_array.X;
-        code_array.Y0 = code_array.Y;
-        rebuild_codes.push_back(code_array);
-        code_array.Name = G03;
-        code_array.X = iter->I;
-        code_array.Y = iter->J - iter->R;
-        rebuild_codes.push_back(code_array);
-      }
-    } else {
-      code_array.Name = G03;
-      code_array.X0 = code_array.X;
-      code_array.Y0 = code_array.Y;
-      code_array.I = iter->I;
-      code_array.J = iter->J;
-      code_array.OmitF = false;
-      code_array.F = hole_speed;
-      rebuild_codes.push_back(code_array);
-    }
+    code_array.Name = M50;
+    code_array.OmitAsynchronousStop = false;
+    code_array.AsynchronousStop = asynchronous_stop;
+    rebuild_codes.push_back(code_array);
+
     code_array.Name = G03;
     code_array.X0 = code_array.X;
     code_array.Y0 = code_array.Y;
@@ -187,29 +142,13 @@ void HyperthermCircleHoleCodeRebuild::ModifyCircleHoleCode(
   GCodeStruct code_array = g_code[circle_index];
   code_array.OmitF = false;
   code_array.F = hole_speed;
+  rebuild_codes.push_back(code_array);
 
-  double close_arc_dis = ((hole_speed / 60.0) * asynchronous_stop) * circle_iter->R / (circle_iter->R - hole_kerf / 2);
-  if (math::IsLesser(close_arc_dis, 0)) {
-    math::Arc arc(code_array.I, code_array.J, code_array.R,
-        code_array.X0, code_array.Y0, code_array.X, code_array.Y,
-        circle_iter->Name == G02 ? math::CW : math::CCW);
+  code_array.Name = M50;
+  code_array.OmitAsynchronousStop = false;
+  code_array.AsynchronousStop = asynchronous_stop;
+  rebuild_codes.push_back(code_array);
 
-    if (arc.Calc(code_array.X, code_array.Y, fabs(close_arc_dis)) == -1) {
-      rebuild_codes.push_back(code_array);
-    } else {
-      rebuild_codes.push_back(code_array);
-      code_array.Name = M29;
-      code_array.X0 = code_array.X;
-      code_array.Y0 = code_array.Y;
-      rebuild_codes.push_back(code_array);
-      code_array.Name = circle_iter->Name;
-      code_array.X = circle_iter->X;
-      code_array.Y = circle_iter->Y;
-      rebuild_codes.push_back(code_array);
-    }
-  } else {
-    rebuild_codes.push_back(code_array);
-  }
   for (size_t i = circle_index + 1; i < g_code.size(); i++) {
     code_array = g_code[i];
     if (code_array.Name == G01 || code_array.Name == G02 || code_array.Name == G03) {

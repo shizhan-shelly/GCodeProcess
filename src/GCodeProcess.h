@@ -98,6 +98,7 @@ class GCodeProcess {
   double speed_hole_;
   double lead_in_speed_;
   double overburn_speed_;
+  double asynchronous_stop_;
   double US_;
   double PA_;
 

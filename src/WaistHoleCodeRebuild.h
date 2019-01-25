@@ -15,7 +15,7 @@ class WaistHoleCodeRebuild : public HoleCodeRebuild {
       const std::vector<GCodeStruct> &g_code, size_t waist_index,
       double kerf_hole, double speed_hole,
       double lead_in_speed, double over_burn_speed,
-      double US, double PA);
+      double US, double asynchronous_stop);
 
  private:
   void RebuildCode(std::vector<GCodeStruct> &rebuild_codes,
@@ -23,11 +23,11 @@ class WaistHoleCodeRebuild : public HoleCodeRebuild {
       const GCodeStruct &first_arc, const GCodeStruct &second_arc,
       double kerf_hole, double speed_hole,
       double lead_in_speed, double over_burn_speed,
-      double US, double PA);
+      double US, double asynchronous_stop);
 
   std::vector<GCodeStruct> OverburnArcCodes(
       const GCodeStruct &arc_code, double over_burn_speed,
-      double US, double PA);
+      double US, double asynchronous_stop);
 
 }; // class WaistHoleCodeRebuild
 

@@ -18,7 +18,7 @@ class GCodeRestruct {
 
   void GetKjellbergProcessParameter(double hole_diameter,
       double &hole_speed, double &lead_in_speed, double &overburn_speed,
-      double &hole_kerf,
+      double &hole_kerf, double &asynchronous_stop,
       double &US, double &PA);
 
  private:

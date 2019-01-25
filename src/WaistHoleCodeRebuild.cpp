@@ -18,7 +18,7 @@ void WaistHoleCodeRebuild::RebuildWaistHoleCode(
     const std::vector<GCodeStruct> &g_code, size_t waist_index,
     double kerf_hole, double speed_hole,
     double lead_in_speed, double over_burn_speed,
-    double US, double PA) {
+    double US, double asynchronous_stop) {
 
   std::vector<GCodeStruct>::const_iterator iter = g_code.begin() + waist_index;
   D_Point start_point = D_Point(iter->X0, iter->Y0);
@@ -38,21 +38,21 @@ void WaistHoleCodeRebuild::RebuildWaistHoleCode(
   if (IsEqual(arc_codes[0].Y0, arc_codes[0].Y)) {
     if (arc_codes[0].Name == G02) {
       if (arc_codes[0].X0 < arc_codes[0].X) {
-        RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, PA);
+        RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop);
       } else {
-        RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[1], arc_codes[0], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, PA);
+        RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[1], arc_codes[0], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop);
       }
     } else {
       if (arc_codes[0].X0 > arc_codes[0].X) {
-        RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, PA);
+        RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop);
       } else {
-        RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[1], arc_codes[0], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, PA);
+        RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[1], arc_codes[0], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop);
       }
     }
   } else if (arc_codes[0].Y0 < arc_codes[0].Y) {
-    RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, PA);
+    RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop);
   } else {
-    RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[1], arc_codes[0], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, PA);
+    RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[1], arc_codes[0], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop);
   }
 }
 
@@ -62,7 +62,7 @@ void WaistHoleCodeRebuild::RebuildCode(
     const GCodeStruct &first_arc, const GCodeStruct &second_arc,
     double kerf_hole, double speed_hole,
     double lead_in_speed, double over_burn_speed,
-    double US, double PA) {
+    double US, double asynchronous_stop) {
 
   GCodeStruct code_array = g_code[waist_index];
   code_array.Name = G00;
@@ -196,7 +196,7 @@ void WaistHoleCodeRebuild::RebuildCode(
     rebuild_codes.push_back(code_array);
   }
   std::vector<GCodeStruct> overburn_arc = OverburnArcCodes(first_arc,
-      over_burn_speed, US, PA);
+      over_burn_speed, US, asynchronous_stop);
 
   rebuild_codes.insert(rebuild_codes.end(), overburn_arc.begin(),
       overburn_arc.end());
@@ -212,7 +212,7 @@ void WaistHoleCodeRebuild::RebuildCode(
 
 std::vector<GCodeStruct> WaistHoleCodeRebuild::OverburnArcCodes(
     const GCodeStruct &arc_code, double over_burn_speed,
-    double US, double PA) {
+    double US, double asynchronous_stop) {
 
   std::vector<GCodeStruct> arc_codes;
   if (arc_code.Name != G02 && arc_code.Name != G03) {
@@ -232,68 +232,37 @@ std::vector<GCodeStruct> WaistHoleCodeRebuild::OverburnArcCodes(
     }
   }
   double angle0 = atan(tan_angle0);
-  double angle1 = US > PA ? angle0 + GetOverburnArcAngle(US - PA, arc_code.R) : 0;
-  double angle2 = angle0 + GetOverburnArcAngle(US, arc_code.R);
+  double angle = angle0 + GetOverburnArcAngle(US, arc_code.R);
 
   GCodeStruct code_array = arc_code;
   if (arc_code.Name == G02) {
-    if (angle1 > 0) {
-      if (arc_code.Y0 < arc_code.J) {
-        code_array.X = arc_code.X0 - (arc_code.R * sin(angle1) - arc_code.R * sin(angle0));
-        code_array.Y = arc_code.Y0 + (arc_code.R * cos(angle0) - arc_code.R * cos(angle1));
-      } else {
-        code_array.X = arc_code.X0 + (arc_code.R * cos(angle0) - arc_code.R * cos(angle1));
-        code_array.Y = arc_code.Y0 + (arc_code.R * sin(angle1) - arc_code.R * sin(angle0));
-      }
-      code_array.OmitF = false;
-      code_array.F = over_burn_speed;
-      arc_codes.push_back(code_array);
-      code_array.X0 = code_array.X;
-      code_array.Y0 = code_array.Y;
-    }
-    code_array.Name = M29;
-    arc_codes.push_back(code_array);
     if (arc_code.Y0 < arc_code.J) {
-      code_array.Name = G02;
-      code_array.X = code_array.X0 - (arc_code.R * sin(angle2) - arc_code.R * sin(angle1));
-      code_array.Y = code_array.Y0 + (arc_code.R * cos(angle1) - arc_code.R * cos(angle2));
+      code_array.X = code_array.X0 - (arc_code.R * sin(angle) - arc_code.R * sin(angle0));
+      code_array.Y = code_array.Y0 + (arc_code.R * cos(angle0) - arc_code.R * cos(angle));
     } else {
-      code_array.Name = G02;
-      code_array.X = code_array.X0 + (arc_code.R * cos(angle1) - arc_code.R * cos(angle2));
-      code_array.Y = code_array.Y0 + (arc_code.R * sin(angle2) - arc_code.R * sin(angle1));
+      code_array.X = code_array.X0 + (arc_code.R * cos(angle0) - arc_code.R * cos(angle));
+      code_array.Y = code_array.Y0 + (arc_code.R * sin(angle) - arc_code.R * sin(angle0));
     }
     code_array.OmitF = false;
     code_array.F = over_burn_speed;
     arc_codes.push_back(code_array);
   } else if (arc_code.Name == G03) {
-    if (angle1 > 0) {
-      if (arc_code.Y0 < arc_code.J) {
-        code_array.X = arc_code.X0 + (arc_code.R * sin(angle1) - arc_code.R * sin(angle0));
-        code_array.Y = arc_code.Y0 + (arc_code.R * cos(angle0) - arc_code.R * cos(angle1));
-      } else {
-        code_array.X = arc_code.X0 - (arc_code.R * cos(angle0) - arc_code.R * cos(angle1));
-        code_array.Y = arc_code.Y0 + (arc_code.R * sin(angle1) - arc_code.R * sin(angle0));
-      }
-      code_array.OmitF = false;
-      code_array.F = over_burn_speed;
-      arc_codes.push_back(code_array);
-      code_array.X0 = code_array.X;
-      code_array.Y0 = code_array.Y;
-    }
-    code_array.Name = M29;
-    arc_codes.push_back(code_array);
     if (arc_code.Y0 < arc_code.J) {
-      code_array.Name = G03;
-      code_array.X = code_array.X0 + (arc_code.R * sin(angle2) - arc_code.R * sin(angle1));
-      code_array.Y = code_array.Y0 + (arc_code.R * cos(angle1) - arc_code.R * cos(angle2));
+      code_array.X = code_array.X0 + (arc_code.R * sin(angle) - arc_code.R * sin(angle0));
+      code_array.Y = code_array.Y0 + (arc_code.R * cos(angle0) - arc_code.R * cos(angle));
     } else {
-      code_array.Name = G03;
-      code_array.X = code_array.X0 - (arc_code.R * cos(angle1) - arc_code.R * cos(angle2));
-      code_array.Y = code_array.Y0 + (arc_code.R * sin(angle2) - arc_code.R * sin(angle1));
+      code_array.X = code_array.X0 - (arc_code.R * cos(angle0) - arc_code.R * cos(angle));
+      code_array.Y = code_array.Y0 + (arc_code.R * sin(angle) - arc_code.R * sin(angle0));
     }
     code_array.OmitF = false;
     code_array.F = over_burn_speed;
     arc_codes.push_back(code_array);
   }
+
+  code_array.Name = M50;
+  code_array.OmitAsynchronousStop = false;
+  code_array.AsynchronousStop = asynchronous_stop;
+  arc_codes.push_back(code_array);
+
   return arc_codes;
 }

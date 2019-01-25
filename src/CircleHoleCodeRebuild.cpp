@@ -14,7 +14,7 @@ void CircleHoleCodeRebuild::RebuildCircleHoleCode(
     const std::vector<GCodeStruct> &g_code, size_t circle_index,
     double kerf_hole, double speed_hole,
     double lead_in_speed, double over_burn_speed,
-    double US, double PA) {
+    double US, double asynchronous_stop) {
 
   std::vector<GCodeStruct>::const_iterator iter = g_code.begin()
       + circle_index;
@@ -92,8 +92,7 @@ void CircleHoleCodeRebuild::RebuildCircleHoleCode(
     rebuild_codes.push_back(code_array);
   }
 
-  double arc_angle1 = US > PA ? GetOverburnArcAngle(US - PA, iter->R) : 0;
-  double arc_angle2 = GetOverburnArcAngle(US, iter->R);
+  double arc_angle = GetOverburnArcAngle(US, iter->R);
 
   if (iter->Name == G02) {
     code_array.Name = G02;
@@ -104,23 +103,17 @@ void CircleHoleCodeRebuild::RebuildCircleHoleCode(
     code_array.OmitF = false;
     code_array.F = speed_hole;
     rebuild_codes.push_back(code_array);
-    if (arc_angle1 > 0) {
-      code_array.Name = G02;
-      code_array.X = code_array.X0 - iter->R * sin(arc_angle1);
-      code_array.Y = code_array.Y0 + iter->R * (1 - cos(arc_angle1));
-      code_array.OmitF = false;
-      code_array.F = over_burn_speed;
-      rebuild_codes.push_back(code_array);
-    }
-    code_array.Name = M29;
-    rebuild_codes.push_back(code_array);
+
     code_array.Name = G02;
-    code_array.X0 = code_array.X;
-    code_array.Y0 = code_array.Y;
-    code_array.X = code_array.X0 - iter->R * (sin(arc_angle2) - sin(arc_angle1));
-    code_array.Y = code_array.Y0 + iter->R * (cos(arc_angle1) - cos(arc_angle2));
+    code_array.X = code_array.X0 - iter->R * sin(arc_angle);
+    code_array.Y = code_array.Y0 + iter->R * (1 - cos(arc_angle));
     code_array.OmitF = false;
     code_array.F = over_burn_speed;
+    rebuild_codes.push_back(code_array);
+
+    code_array.Name = M50;
+    code_array.OmitAsynchronousStop = false;
+    code_array.AsynchronousStop = asynchronous_stop;
     rebuild_codes.push_back(code_array);
   } else {
     code_array.Name = G03;
@@ -131,23 +124,17 @@ void CircleHoleCodeRebuild::RebuildCircleHoleCode(
     code_array.OmitF = false;
     code_array.F = speed_hole;
     rebuild_codes.push_back(code_array);
-    if (arc_angle1 > 0) {
-      code_array.Name = G03;
-      code_array.X = code_array.X0 + iter->R * sin(arc_angle1);
-      code_array.Y = code_array.Y0 + iter->R * (1 - cos(arc_angle1));
-      code_array.OmitF = false;
-      code_array.F = over_burn_speed;
-      rebuild_codes.push_back(code_array);
-    }
-    code_array.Name = M29;
-    rebuild_codes.push_back(code_array);
+
     code_array.Name = G03;
-    code_array.X0 = code_array.X;
-    code_array.Y0 = code_array.Y;
-    code_array.X = code_array.X0 + iter->R * (sin(arc_angle2) - sin(arc_angle1));
-    code_array.Y = code_array.Y0 + iter->R * (cos(arc_angle1) - cos(arc_angle2));
+    code_array.X = code_array.X0 + iter->R * sin(arc_angle);
+    code_array.Y = code_array.Y0 + iter->R * (1 - cos(arc_angle));
     code_array.OmitF = false;
     code_array.F = over_burn_speed;
+    rebuild_codes.push_back(code_array);
+
+    code_array.Name = M50;
+    code_array.OmitAsynchronousStop = false;
+    code_array.AsynchronousStop = asynchronous_stop;
     rebuild_codes.push_back(code_array);
   }
   code_array.Name = M47;

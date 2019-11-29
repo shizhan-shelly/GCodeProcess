@@ -82,6 +82,7 @@ class GCodeParse {
 
   // gm_type: 0, G code; 1: M code
   void ID2CodeName(int gm_type, int gm_id, GCodeStruct &g_code);
+  void ParseRemark(const std::string &code_line, GCodeStruct &g_code);
   void ParseCodeArguments(const std::string &code_line, GCodeStruct &g_code);
   void ParseXArgument(const std::string &code_line, GCodeStruct &g_code);
   void ParseUArgument(const std::string &code_line, GCodeStruct &g_code);
@@ -98,8 +99,7 @@ class GCodeParse {
 
   /**
    * This function will parse a g code object if it is G or M code.
-   * return: 0 comments
-   *        -1 Unknown
+   * return: 0 Unknown
    *         1 G, M code or default
    */
   int ParseCodeLine(const std::string &code_line, GCodeStruct &g_code);

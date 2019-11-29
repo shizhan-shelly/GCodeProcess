@@ -78,10 +78,9 @@ void GCodeParse::ParseGCode(const std::vector<std::string> &code_lines,
     code_array.VariableValue = 0.;
     code_array.AsynchronousStop = 0.;
     code_array.OmitAsynchronousStop = true;
+    code_array.remark = "";
 
-    if (ParseCodeLine(code_lines[i], code_array) != 1) {
-      continue;
-    }
+    ParseCodeLine(code_lines[i], code_array);
     if ((code_array.Name == G01 || code_array.Name == G02 || code_array.Name == G03)
         && !m07_m08_flag_) {
 
@@ -439,6 +438,9 @@ void GCodeParse::GenerateGCode(const std::vector<GCodeStruct> &g_code,
           g_code[i].VariableType, g_code[i].VariableValue);
 
       break;
+     case GGG:
+      sprintf(GCODE, "%s\n", g_code[i].remark.c_str());
+      break;
      case M00:
       sprintf(GCODE, "M00\n");
       break;
@@ -618,9 +620,7 @@ bool GCodeParse::AsynchronousStopGCode(const std::vector<GCodeStruct> &g_code,
 void GCodeParse::ToUppercase(std::string &line) {
   std::string transform = line;
   for (size_t i = 0; i < line.size(); i++) {
-    if (islower(line[i])) {
-      transform[i] = toupper(line[i]);
-    }
+    transform[i] = toupper(line[i]);
   }
   line = transform;
 }
@@ -710,23 +710,22 @@ void GCodeParse::ParseSecondary(GCodeStruct &g_code) {
 }
 
 /**
- * return: 0 comments
- *        -1 Unknown
+ * return: 0 Unknown
  *         1 G, M code or default
  */
 int GCodeParse::ParseCodeLine(const std::string &code_line,
-                              GCodeStruct &g_code) {
+    GCodeStruct &g_code) {
 
   int gm_id = -1;
   int type = RecognizeGMType(code_line, gm_id);
-  if (type == 3) { // comments
-    return 0;
-  }
   if (type == 0 || type == 1) {
     ID2CodeName(type, gm_id, g_code);
+  } else if (type == 3) { // comments
+    g_code.Name = GGG;
   }
   if (g_code.Name == GGG) {
-    return -1;
+    ParseRemark(code_line, g_code);
+    return 0;
   }
   ParseCodeArguments(code_line, g_code);
   ParseSecondary(g_code);
@@ -807,6 +806,14 @@ void GCodeParse::ID2CodeName(int gm_type, int gm_id, GCodeStruct &g_code) {
   }
 }
 
+void GCodeParse::ParseRemark(const std::string &code_line,
+    GCodeStruct &g_code) {
+
+  if (g_code.Name == GGG) {
+    g_code.remark = code_line;
+  }
+}
+
 void GCodeParse::ParseCodeArguments(const std::string &code_line,
                                     GCodeStruct &g_code) {
 
@@ -834,6 +841,10 @@ void GCodeParse::ParseXArgument(const std::string &code_line,
   }
   if (g_code.Name == G99) {
     g_code.ScaleFactor = value;
+  } else if (g_code.Name == G41 || g_code.Name == G42) {
+    value = foot_metric_ == MetricSystem ? value : value * FOOT_METRIC_FACTOR;
+    g_code.KerfValue = value;
+    g_code.OmitKerf = false;
   } else if (g_code.Name == G92) {
     value = foot_metric_ == MetricSystem ? value : value * FOOT_METRIC_FACTOR;
     g_code.X = value;

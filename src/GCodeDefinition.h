@@ -4,6 +4,8 @@
 #ifndef GCODE_GCODEDEFINITION_H__
 #define GCODE_GCODEDEFINITION_H__
 
+#include <string>
+
 typedef enum _ProcessType {
   NoProcess = 0,
   Plasma1 = 1,
@@ -100,6 +102,7 @@ typedef struct _GCodeStruct {
   int VariableType;
   double VariableValue;
   double AsynchronousStop;
+  std::string remark;
 
 } GCodeStruct;
 

@@ -737,21 +737,24 @@ int GCodeParse::ParseCodeLine(const std::string &code_line,
 //        2 Same as last G or M code(Default)
 //        3 Comments
 int GCodeParse::RecognizeGMType(const std::string &code_line, int &gm_id) {
+  size_t pos_r = code_line.find_first_of("(%T");
   size_t pos_g = code_line.find('G');
   size_t pos_m = code_line.find('M');
   size_t pos = pos_g != std::string::npos ? pos_g : pos_m;
 
+  if (pos_r != std::string::npos) { // Comments
+    return 3;
+  }
   if (pos != std::string::npos) { // G or M code
     size_t id_end = code_line.find_first_not_of("0123456789", pos + 1);
     std::string value = id_end != std::string::npos ?
-        code_line.substr(pos + 1, id_end - pos -1) : code_line.substr(pos + 1);
+        code_line.substr(pos + 1, id_end - pos - 1) : code_line.substr(pos + 1);
 
     char *endptr;
     gm_id = strtol(value.c_str(), &endptr, 10);
     return pos_g != std::string::npos ? 0 : 1;
   } else {
-    pos = code_line.find_first_of("(%T");
-    return pos != std::string::npos ? 3 : 2;
+    return 2;
   }
 }
 

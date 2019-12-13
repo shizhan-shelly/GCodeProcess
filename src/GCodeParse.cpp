@@ -906,11 +906,11 @@ void GCodeParse::ParseIArgument(const std::string &code_line,
 
   double value = 0.;
   if (GetCodeValue(code_line, "I", value) != 1) {
-    return;
+    value = 0.;
   }
   if (g_code.Name == G99) {
     g_code.HorizonMirror = value;
-  } else {
+  } else if (g_code.Name == G02 || g_code.Name == G03) {
     value = foot_metric_ == MetricSystem ? value : value * FOOT_METRIC_FACTOR;
     g_code.I = relative_absolute_ == Absolute ? value : g_code.X0 + value;
   }
@@ -921,11 +921,11 @@ void GCodeParse::ParseJArgument(const std::string &code_line,
 
   double value = 0.;
   if (GetCodeValue(code_line, "J", value) != 1) {
-    return;
+    value = 0.;
   }
   if (g_code.Name == G99) {
     g_code.VerticalMirror = value;
-  } else {
+  } else if (g_code.Name == G02 || g_code.Name == G03) {
     value = foot_metric_ == MetricSystem ? value : value * FOOT_METRIC_FACTOR;
     g_code.J = relative_absolute_ == Absolute ? value : g_code.Y0 + value;
   }

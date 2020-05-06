@@ -86,6 +86,7 @@
     <ClCompile Include="src\GCodeRestruct.cpp" />
     <ClCompile Include="src\HoleCodeRebuild.cpp" />
     <ClCompile Include="src\HyperthermCircleHoleCodeRebuild.cpp" />
+    <ClCompile Include="src\HyperthermWaistHoleCodeRebuild.cpp" />
     <ClCompile Include="src\math\Arc.cpp" />
     <ClCompile Include="src\math\Circle.cpp" />
     <ClCompile Include="src\math\D_Point.cpp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="src\GCodeRestruct.h" />
     <ClInclude Include="src\HoleCodeRebuild.h" />
     <ClInclude Include="src\HyperthermCircleHoleCodeRebuild.h" />
+    <ClInclude Include="src\HyperthermWaistHoleCodeRebuild.h" />
     <ClInclude Include="src\math\Arc.h" />
     <ClInclude Include="src\math\Circle.h" />
     <ClInclude Include="src\math\D_Point.h" />

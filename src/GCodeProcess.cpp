@@ -6,6 +6,7 @@
 #include "GCodeParse.h"
 #include "CircleHoleCodeRebuild.h"
 #include "HyperthermCircleHoleCodeRebuild.h"
+#include "HyperthermWaistHoleCodeRebuild.h"
 #include "WaistHoleCodeRebuild.h"
 #include "math/Arc.h"
 #include "math/D_Point.h"
@@ -153,6 +154,36 @@ void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
         continue;
       }
       circle_iter++;
+    }
+    if (waist_iter != waist_shape.end() && g_code[i].LineNoInTotalFile == waist_iter->first) {
+      double radius = GetWaistHoleRadius(g_code, waist_iter->first, waist_iter->second);
+      if (IsInsideContour(g_code, waist_iter->first, waist_iter->second)) {
+        theApp.GetHyperthermProcessParameter(radius * 2,
+            speed_hole_, lead_in_speed_, kerf_hole_,
+            asynchronous_stop_, disable_ahc_, US_);
+
+        HyperthermWaistHoleCodeRebuild waist_build;
+        if (IsSmallHoleHypertherm(radius, thickness)) {
+          PreRebuild(rebuild_codes);
+          waist_build.RebuildWaistHoleCode(rebuild_codes,
+              g_code, g_code[i].LineNoInTotalFile, kerf_hole_, speed_hole_,
+              lead_in_speed_, overburn_speed_,
+              US_, asynchronous_stop_, disable_ahc_);
+
+          waist_build.RebuildLeadOutCode(rebuild_codes, g_code, waist_iter->first);
+          PostRebuild(g_code, waist_iter->first, i);
+        } else {
+          waist_build.ModifyWaistHoleCode(rebuild_codes,
+              g_code, waist_iter->first, waist_iter->second,
+              kerf_hole_, speed_hole_, lead_in_speed_, overburn_speed_,
+              asynchronous_stop_);
+
+          PostRebuild(g_code, waist_iter->first, i);
+        }
+        waist_iter++;
+        continue;
+      }
+      waist_iter++;
     }
     OutsideContourKerfRebuild(g_code[i], outside_contour_kerf);
     OutsideContourSpeedRebuild(g_code[i], outside_contour_cut_speed);

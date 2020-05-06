@@ -101,6 +101,7 @@ class GCodeProcess {
   double asynchronous_stop_;
   double US_;
   double PA_;
+  int disable_ahc_;
 
 }; // class GCodeProcess
 

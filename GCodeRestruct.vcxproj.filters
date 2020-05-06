@@ -65,6 +65,9 @@
     <ClCompile Include="src\math\D_Point.cpp">
       <Filter>src\math</Filter>
     </ClCompile>
+    <ClCompile Include="src\HyperthermWaistHoleCodeRebuild.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GCodeDefinition.h">
@@ -120,6 +123,9 @@
     </ClInclude>
     <ClInclude Include="src\math\D_Point.h">
       <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HyperthermWaistHoleCodeRebuild.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

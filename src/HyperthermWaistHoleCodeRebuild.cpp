@@ -36,10 +36,17 @@ void HyperthermWaistHoleCodeRebuild::RebuildWaistHoleCode(
     assert(false);
     return ;
   }
-  RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1],
-      kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US,
-      asynchronous_stop, disable_ahc);
-
+  if (IsEqual(arc_codes[0].Y0, arc_codes[0].Y)) {
+    if ((arc_codes[0].Name == G02 && arc_codes[0].X0 < arc_codes[0].X) || (arc_codes[0].Name == G03 && arc_codes[0].X0 > arc_codes[0].X)) {
+      RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[1], arc_codes[0], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop, disable_ahc);
+    } else {
+      RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop, disable_ahc);
+    }
+  } else if (arc_codes[0].Y0 < arc_codes[0].Y) {
+    RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[1], arc_codes[0], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop, disable_ahc);
+  } else {
+    RebuildCode(rebuild_codes, g_code, waist_index, arc_codes[0], arc_codes[1], kerf_hole, speed_hole, lead_in_speed, over_burn_speed, US, asynchronous_stop, disable_ahc);
+  }
 }
 
 void HyperthermWaistHoleCodeRebuild::RebuildCode(

@@ -167,7 +167,7 @@ void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
           PreRebuild(rebuild_codes);
           waist_build.RebuildWaistHoleCode(rebuild_codes,
               g_code, g_code[i].LineNoInTotalFile, kerf_hole_, speed_hole_,
-              lead_in_speed_, overburn_speed_,
+              lead_in_speed_, speed_hole_,
               US_, asynchronous_stop_, disable_ahc_);
 
           waist_build.RebuildLeadOutCode(rebuild_codes, g_code, waist_iter->first);
@@ -175,7 +175,7 @@ void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
         } else {
           waist_build.ModifyWaistHoleCode(rebuild_codes,
               g_code, waist_iter->first, waist_iter->second,
-              kerf_hole_, speed_hole_, lead_in_speed_, overburn_speed_,
+              kerf_hole_, speed_hole_, lead_in_speed_, speed_hole_,
               asynchronous_stop_);
 
           PostRebuild(g_code, waist_iter->first, i);

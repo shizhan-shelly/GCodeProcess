@@ -507,8 +507,10 @@ void GCodeProcess::OutsideContourSpeedRebuild(GCodeStruct &g_code,
                                               double cutting_speed) {
 
   if (g_code.Name == G01 || g_code.Name == G02 || g_code.Name == G03) {
-    g_code.OmitF = false;
-    g_code.F = cutting_speed;
+    if (g_code.OmitF) {
+      g_code.OmitF = false;
+      g_code.F = cutting_speed;
+    }
   }
 }
 

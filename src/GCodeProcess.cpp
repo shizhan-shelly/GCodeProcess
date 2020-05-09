@@ -518,8 +518,10 @@ void GCodeProcess::OutsideContourKerfRebuild(GCodeStruct &g_code,
                                              double cutting_kerf) {
 
   if (g_code.Name == G41 || g_code.Name == G42) {
-    g_code.OmitKerf = false;
-    g_code.KerfValue = cutting_kerf / 2;
+    if (g_code.OmitKerf) {
+      g_code.OmitKerf = false;
+      g_code.KerfValue = cutting_kerf / 2;
+    }
   }
 }
 

@@ -64,13 +64,13 @@ void GCodeParse::ParseGCode(const std::vector<std::string> &code_lines,
   code_array.VerticalMirror = 0;
   code_array.ShowLine = 0;
   code_array.LineNoInTotalFile = 0;
-  code_array.OmitF = true;
-  code_array.F = 0;
   for (size_t i = 0; i < code_lines.size(); i++) {
     code_array.X0 = code_array.X = start_X;
     code_array.Y0 = code_array.Y = start_Y;
     code_array.OmitKerf = true;
     code_array.KerfValue = 0;
+    code_array.OmitF = true;
+    code_array.F = 0;
     code_array.R = 0;
     code_array.Length = 0;
     code_array.Delay = 0.;

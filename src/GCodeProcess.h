@@ -80,7 +80,7 @@ class GCodeProcess {
 
   bool IsSmallHoleHypertherm(double radius, double thickness);
 
-  void OutsideContourSpeedRebuild(GCodeStruct &g_code, double cutting_speed);
+  void OutsideContourSpeedRebuild(GCodeStruct &g_code);
 
   void OutsideContourKerfRebuild(GCodeStruct &g_code, double cutting_kerf);
 
@@ -94,6 +94,7 @@ class GCodeProcess {
   void CloseArcVolProcess(std::vector<GCodeStruct> &segment_code,
                           double advance_dis);
 
+  double speed_outside_;
   double kerf_hole_;
   double speed_hole_;
   double lead_in_speed_;

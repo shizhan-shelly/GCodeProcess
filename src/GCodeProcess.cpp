@@ -39,6 +39,7 @@ void GCodeProcess::GCodeRebuild(const std::string &file_name,
   std::vector<size_t>::iterator circle_iter = circle_shape.begin();
   std::map<size_t, size_t>::iterator waist_iter = waist_shape.begin();
 
+  speed_outside_ = cutting_speed_quality;
   std::vector<GCodeStruct> rebuild_codes;
   for (size_t i = 0; i < g_code.size(); i++) {
     if (circle_iter != circle_shape.end()) {
@@ -91,7 +92,7 @@ void GCodeProcess::GCodeRebuild(const std::string &file_name,
       }
     }
     OutsideContourKerfRebuild(g_code[i], cutting_kerf_quality);
-    OutsideContourSpeedRebuild(g_code[i], cutting_speed_quality);
+    OutsideContourSpeedRebuild(g_code[i]);
     rebuild_codes.push_back(g_code[i]);
   }
 
@@ -117,6 +118,7 @@ void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
   std::vector<size_t>::iterator circle_iter = circle_shape.begin();
   std::map<size_t, size_t>::iterator waist_iter = waist_shape.begin();
 
+  speed_outside_ = outside_contour_cut_speed;
   std::vector<GCodeStruct> rebuild_codes;
   for (size_t i = 0; i < g_code.size(); i++) {
     if (circle_iter != circle_shape.end() && g_code[i].LineNoInTotalFile == *circle_iter) {
@@ -186,7 +188,7 @@ void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
       waist_iter++;
     }
     OutsideContourKerfRebuild(g_code[i], outside_contour_kerf);
-    OutsideContourSpeedRebuild(g_code[i], outside_contour_cut_speed);
+    OutsideContourSpeedRebuild(g_code[i]);
     rebuild_codes.push_back(g_code[i]);
   }
 
@@ -503,13 +505,13 @@ void GCodeProcess::PostRebuild(const std::vector<GCodeStruct> &g_code,
   }
 }
 
-void GCodeProcess::OutsideContourSpeedRebuild(GCodeStruct &g_code,
-                                              double cutting_speed) {
-
+void GCodeProcess::OutsideContourSpeedRebuild(GCodeStruct &g_code) {
   if (g_code.Name == G01 || g_code.Name == G02 || g_code.Name == G03) {
     if (g_code.OmitF) {
       g_code.OmitF = false;
-      g_code.F = cutting_speed;
+      g_code.F = speed_outside_;
+    } else {
+      speed_outside_ = g_code.F;
     }
   }
 }

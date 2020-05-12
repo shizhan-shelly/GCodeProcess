@@ -28,14 +28,14 @@ void CircleHoleCodeRebuild::RebuildCircleHoleCode(
   code_array.X0 = rebuild_codes.empty() ? LeadInPoint(g_code, circle_index).x() : rebuild_codes.back().X;
   code_array.Y0 = rebuild_codes.empty() ? LeadInPoint(g_code, circle_index).y() : rebuild_codes.back().Y;
   code_array.X = iter->I;
-  code_array.Y = iter->J;
+  code_array.Y = iter->J + kerf_hole / 2;
   rebuild_codes.push_back(code_array);
   if (lead_in_type_ == LineLeadIn) {
     code_array.Name = G00;
     code_array.X0 = code_array.X;
     code_array.Y0 = code_array.Y;
     code_array.X = iter->Name == G03 ? iter->I - kerf_hole / 2 : iter->I + kerf_hole / 2;
-    code_array.Y = iter->J;
+    code_array.Y = iter->J + kerf_hole / 2;
     rebuild_codes.push_back(code_array);
   }
   code_array.Name = iter->Name == G03 ? G41 : G42;
@@ -55,7 +55,7 @@ void CircleHoleCodeRebuild::RebuildCircleHoleCode(
     code_array.X0 = code_array.X;
     code_array.Y0 = code_array.Y;
     code_array.X = code_array.X0;
-    code_array.Y = code_array.Y0 - iter->R + kerf_hole / 2;
+    code_array.Y = code_array.Y0 - iter->R;
     rebuild_codes.push_back(code_array);
     if (iter->Name == G02) {
       code_array.Name = G02;
@@ -86,9 +86,9 @@ void CircleHoleCodeRebuild::RebuildCircleHoleCode(
     code_array.X0 = code_array.X;
     code_array.Y0 = code_array.Y;
     code_array.X = code_array.X0;
-    code_array.Y = code_array.Y0 - iter->R;
+    code_array.Y = code_array.Y0 - iter->R - kerf_hole / 2;
     code_array.I = code_array.X0;
-    code_array.J = code_array.Y0 - iter->R / 2;
+    code_array.J = code_array.Y0 - iter->R / 2 - kerf_hole / 4;
     rebuild_codes.push_back(code_array);
   }
 

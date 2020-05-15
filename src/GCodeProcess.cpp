@@ -241,22 +241,22 @@ void GCodeProcess::ClosedShapeIntercept(const std::vector<GCodeStruct> &cut_code
     return;
   }
 
-	std::vector<size_t> trace_index;
+  std::vector<size_t> trace_index;
   for (size_t i = 0; i < motion_index.size(); i++) {
     trace_index.push_back(motion_index[i]);
     std::vector<GCodeStruct> closed_shape = ClosedShapeMotionCode(cut_code,
-	                                                                trace_index);
+                                                                  trace_index);
 
     if (!closed_shape.empty()) {
       if (IsCirCleShape(closed_shape)) {
         circle_shape.push_back(closed_shape.front().LineNoInTotalFile);
-	    } else if (IsWaistShape(closed_shape)) {
+      } else if (IsWaistShape(closed_shape)) {
         waist_shape.insert(std::make_pair(closed_shape.front().LineNoInTotalFile,
             closed_shape.size()));
 
-	    }
-	    trace_index.clear();
-	  }
+      }
+      trace_index.clear();
+    }
   }
 }
 
@@ -279,9 +279,9 @@ std::vector<GCodeStruct> GCodeProcess::ClosedShapeMotionCode(
     if (D_Point::IsSamePoint(start_point, end_point)) {
       for (size_t j = i; j < trace_index.size(); j++) {
         closed_shape.push_back(cut_code[trace_index[j]]);
-			}
-	    return closed_shape;
-		}
+      }
+      return closed_shape;
+    }
     if (i == 0) {
       break;
     }
@@ -290,7 +290,7 @@ std::vector<GCodeStruct> GCodeProcess::ClosedShapeMotionCode(
 }
 
 std::vector<size_t> GCodeProcess::GetMotionIndex(
-	  const std::vector<GCodeStruct> &cut_code) {
+    const std::vector<GCodeStruct> &cut_code) {
 
   std::vector<size_t> motion_index;
   for (size_t i = 0; i < cut_code.size(); i++) {
@@ -308,21 +308,21 @@ bool GCodeProcess::IsMotionCode(const GCodeStruct &g_code) {
 }
 
 bool GCodeProcess::IsCirCleShape(const std::vector<GCodeStruct> &closed_shape) {
-	if (closed_shape.size() != 1) {
-		return false;
-	}
+  if (closed_shape.size() != 1) {
+    return false;
+  }
   return closed_shape.front().Name == G02 || closed_shape.front().Name == G03;
 }
 
 bool GCodeProcess::IsWaistShape(const std::vector<GCodeStruct> &closed_shape) {
-	if (closed_shape.size() < 4) {
-		return false;
-	}
-	unsigned short direction_name;
+  if (closed_shape.size() < 4) {
+    return false;
+  }
+  unsigned short direction_name;
   double first_line_len = 0.;
   double second_line_len = 0.;
   double waist_arc_length = 0.;
-	std::vector<GCodeStruct>::const_iterator iter = closed_shape.begin();
+  std::vector<GCodeStruct>::const_iterator iter = closed_shape.begin();
   if (iter->Name == G01) { // begin of line
     while (iter->Name == G01) {
       first_line_len += iter->Length;
@@ -381,7 +381,7 @@ bool GCodeProcess::IsWaistShape(const std::vector<GCodeStruct> &closed_shape) {
         }
       }
     }
-	} else { // begin of half-circle
+  } else { // begin of half-circle
     if (iter->Name != G02 && iter->Name != G03) {
       return false;
     } else {
@@ -430,7 +430,7 @@ bool GCodeProcess::IsWaistShape(const std::vector<GCodeStruct> &closed_shape) {
       return false;
     }
   }
-	return true;
+  return true;
 }
 
 double GCodeProcess::GetWaistHoleRadius(const std::vector<GCodeStruct> &g_code,

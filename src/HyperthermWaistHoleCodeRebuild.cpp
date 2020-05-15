@@ -85,8 +85,8 @@ void HyperthermWaistHoleCodeRebuild::RebuildCode(
   code_array.F = lead_in_speed;
   code_array.X0 = code_array.X;
   code_array.Y0 = code_array.Y;
-  code_array.X = code_array.X;
-  code_array.Y = code_array.Y - first_arc.R - kerf_hole / 2;
+  code_array.X = code_array.X0;
+  code_array.Y = code_array.Y0 - first_arc.R - kerf_hole / 2;
   code_array.I = (code_array.X0 + code_array.X) / 2;
   code_array.J = (code_array.Y0 + code_array.Y) / 2;
   rebuild_codes.push_back(code_array);

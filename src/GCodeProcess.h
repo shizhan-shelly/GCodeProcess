@@ -80,7 +80,7 @@ class GCodeProcess {
 
   bool IsSmallHoleHypertherm(double radius, double thickness);
 
-  void OutsideContourSpeedRebuild(GCodeStruct &g_code);
+  void OutsideContourSpeedRebuild(GCodeStruct &g_code, double &cutting_speed);
 
   void OutsideContourKerfRebuild(GCodeStruct &g_code, double cutting_kerf);
 

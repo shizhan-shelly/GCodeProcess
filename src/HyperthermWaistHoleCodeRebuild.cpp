@@ -61,8 +61,13 @@ void HyperthermWaistHoleCodeRebuild::RebuildCode(
   code_array.Name = G00;
   code_array.X0 = rebuild_codes.empty() ? LeadInPoint(g_code, waist_index).x() : rebuild_codes.back().X;
   code_array.Y0 = rebuild_codes.empty() ? LeadInPoint(g_code, waist_index).y() : rebuild_codes.back().Y;
-  code_array.X = first_arc.I;
-  code_array.Y = first_arc.J + kerf_hole / 2;
+  if (IsEqual(first_arc.X0, first_arc.X)) {
+    code_array.X = first_arc.I;
+    code_array.Y = first_arc.J + kerf_hole / 2;
+  } else {
+    code_array.X = first_arc.I - kerf_hole / 2;
+    code_array.Y = first_arc.J;
+  }
   rebuild_codes.push_back(code_array);
   code_array.Name = first_arc.Name == G02 ? G42 : G41;
   code_array.OmitKerf = false;
@@ -76,17 +81,19 @@ void HyperthermWaistHoleCodeRebuild::RebuildCode(
     code_array.Name = M46;
     rebuild_codes.push_back(code_array);
   }
-  if (first_arc.Name == G02) {
-    code_array.Name = G02;
-  } else {
-    code_array.Name = G03;
-  }
+  // lead in arc: G02 or G03
+  code_array.Name = first_arc.Name;
   code_array.OmitF = false;
   code_array.F = lead_in_speed;
   code_array.X0 = code_array.X;
   code_array.Y0 = code_array.Y;
-  code_array.X = code_array.X0;
-  code_array.Y = code_array.Y0 - first_arc.R - kerf_hole / 2;
+  if (IsEqual(first_arc.X0, first_arc.X)) {
+    code_array.X = code_array.X0;
+    code_array.Y = code_array.Y0 - first_arc.R - kerf_hole / 2;
+  } else {
+    code_array.X = code_array.X0 + first_arc.R + kerf_hole / 2;
+    code_array.Y = code_array.Y0;
+  }
   code_array.I = (code_array.X0 + code_array.X) / 2;
   code_array.J = (code_array.Y0 + code_array.Y) / 2;
   rebuild_codes.push_back(code_array);
@@ -190,8 +197,13 @@ std::vector<GCodeStruct> HyperthermWaistHoleCodeRebuild::OverburnArcCodes(
     code_array.Name = G02;
     code_array.X0 = code_array.X;
     code_array.Y0 = code_array.Y;
-    code_array.X = code_array.X0 - arc_code.R * sin(arc_angle);
-    code_array.Y = code_array.Y0 + arc_code.R * (1 - cos(arc_angle));
+    if (IsEqual(arc_code.X0, arc_code.X)) {
+      code_array.X = code_array.X0 - arc_code.R * sin(arc_angle);
+      code_array.Y = code_array.Y0 + arc_code.R * (1 - cos(arc_angle));
+    } else {
+      code_array.X = code_array.X0 - arc_code.R * sin(arc_angle);
+      code_array.Y = code_array.Y0 - arc_code.R * (1 - cos(arc_angle));
+    }
     code_array.OmitF = false;
     code_array.F = over_burn_speed;
     arc_codes.push_back(code_array);
@@ -199,8 +211,13 @@ std::vector<GCodeStruct> HyperthermWaistHoleCodeRebuild::OverburnArcCodes(
     code_array.Name = G03;
     code_array.X0 = code_array.X;
     code_array.Y0 = code_array.Y;
-    code_array.X = code_array.X0 + arc_code.R * sin(arc_angle);
-    code_array.Y = code_array.Y0 + arc_code.R * (1 - cos(arc_angle));
+    if (IsEqual(arc_code.X0, arc_code.X)) {
+      code_array.X = code_array.X0 + arc_code.R * sin(arc_angle);
+      code_array.Y = code_array.Y0 + arc_code.R * (1 - cos(arc_angle));
+    } else {
+      code_array.X = code_array.X0 - arc_code.R * sin(arc_angle);
+      code_array.Y = code_array.Y0 + arc_code.R * (1 - cos(arc_angle));
+    }
     code_array.OmitF = false;
     code_array.F = over_burn_speed;
     arc_codes.push_back(code_array);

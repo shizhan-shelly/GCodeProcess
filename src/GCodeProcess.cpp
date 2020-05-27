@@ -311,7 +311,16 @@ bool GCodeProcess::IsCirCleShape(const std::vector<GCodeStruct> &closed_shape) {
   if (closed_shape.size() != 1) {
     return false;
   }
-  return closed_shape.front().Name == G02 || closed_shape.front().Name == G03;
+  for (size_t i = 0; i < closed_shape.size(); i++) {
+    if (closed_shape[i].Name != G02 && closed_shape[i].Name != G03) {
+      return false;
+    } else {
+      if (IsZero(closed_shape[i].R)) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 bool GCodeProcess::IsWaistShape(const std::vector<GCodeStruct> &closed_shape) {

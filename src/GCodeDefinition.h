@@ -107,15 +107,15 @@ typedef struct _GCodeStruct {
 } GCodeStruct;
 
 typedef struct {
-	double g_f_XMaxLimit;  //+X轴最大值
-	double g_f_XMinLimit;  //-X轴最小值
-	double g_f_YMaxLimit; //+Y轴最大值
-	double g_f_YMinLimit;//-Y轴最小值
-	double ScaleXY;
-	double g_GraphicX_start;
-	double g_GraphicY_start;
-	double MaxRadius;
-	double MinRadius;
+  double g_f_XMaxLimit;  //+X轴最大值
+  double g_f_XMinLimit;  //-X轴最小值
+  double g_f_YMaxLimit; //+Y轴最大值
+  double g_f_YMinLimit;//-Y轴最小值
+  double ScaleXY;
+  double g_GraphicX_start;
+  double g_GraphicY_start;
+  double MaxRadius;
+  double MinRadius;
 } GraphyLimit;
 
 typedef struct {

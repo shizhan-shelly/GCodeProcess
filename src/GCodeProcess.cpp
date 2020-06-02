@@ -144,16 +144,9 @@ void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
 
           circle_build.RebuildLeadOutCode(rebuild_codes, g_code, *circle_iter);
           PostRebuild(g_code, *circle_iter, i);
-        } else {
-          circle_build.ModifyCircleHoleCode(rebuild_codes,
-              g_code, *circle_iter,
-              hole_kerf, hole_speed, lead_in_speed, hole_speed,
-              asynchronous_stop);
-
-          PostRebuild(g_code, *circle_iter, i);
+          circle_iter++;
+          continue;
         }
-        circle_iter++;
-        continue;
       }
       circle_iter++;
     }
@@ -174,16 +167,9 @@ void GCodeProcess::GCodeRebuildHypertherm(const std::string &file_name,
 
           waist_build.RebuildLeadOutCode(rebuild_codes, g_code, waist_iter->first);
           PostRebuild(g_code, waist_iter->first, i);
-        } else {
-          waist_build.ModifyWaistHoleCode(rebuild_codes,
-              g_code, waist_iter->first, waist_iter->second,
-              kerf_hole_, speed_hole_, lead_in_speed_, speed_hole_,
-              asynchronous_stop_);
-
-          PostRebuild(g_code, waist_iter->first, i);
+          waist_iter++;
+          continue;
         }
-        waist_iter++;
-        continue;
       }
       waist_iter++;
     }
